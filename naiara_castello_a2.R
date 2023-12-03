@@ -165,44 +165,6 @@ model_allminus5 <- diabetes_data |>
 model_allminus5|> summary ()
 ## AIC = 238.13
 
-# Build a model using forward selection
-
-## Diabetes
-model_forward1 <- diabetes_data |> 
-  glm(formula = Outcome ~ Glucose, family = "binomial")
-model_forward1 |> summary ()
-###AIC = 508.25
-
-## Add age
-model_forward2 <- diabetes_data |> 
-  glm(formula = Outcome ~ Glucose + Age, family = "binomial")
-model_forward2 |> summary ()
-###AIC = 504.53
-
-## Add skin thickness
-model_forward3 <- diabetes_data |> 
-  glm(formula = Outcome ~ Glucose + Age + SkinThickness, family = "binomial")
-model_forward3 |> summary ()
-###AIC = 329.08
-
-## Add insulin
-model_forward4 <- diabetes_data |> 
-  glm(formula = Outcome ~ Glucose + Age + SkinThickness + Insulin, family = "binomial")
-model_forward4 |> summary ()
-###AIC = 241.03
-
-## Add BMI
-model_forward5 <- diabetes_data |> 
-  glm(formula = Outcome ~ Glucose + Age + SkinThickness + Insulin + BMI, family = "binomial")
-model_forward5 |> summary ()
-###AIC = 240.97 ***
-
-## Add pregnancy
-model_forward6 <- diabetes_data |> 
-  glm(formula = Outcome ~ Glucose + Age + SkinThickness + Insulin + BMI + Pregnancies, family = "binomial")
-model_forward6 |> summary ()
-###AIC = 241.1
-
 # Final model
 logistic_model <- diabetes_data |> 
   glm(formula = Outcome ~ . - BloodPressure - Insulin - Age - DiabetesPedigreeFunction - BMI, family = "binomial")
