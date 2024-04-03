@@ -1,0 +1,225 @@
+"0","  ggcorrplot"
+"1","function (corr, method = c(""square"", ""circle""), type = c(""full"", 
+"
+"1","    ""lower"", ""upper""), ggtheme = ggplot2::theme_minimal, title = """", 
+"
+"1","    show.legend = TRUE, legend.title = ""Corr"", show.diag = NULL, 
+"
+"1","    colors = c(""blue"", ""white"", ""red""), outline.color = ""gray"", 
+"
+"1","    hc.order = FALSE, hc.method = ""complete"", lab = FALSE, lab_col = ""black"", 
+"
+"1","    lab_size = 4, p.mat = NULL, sig.level = 0.05, insig = c(""pch"", 
+"
+"1","        ""blank""), pch = 4, pch.col = ""black"", pch.cex = 5, tl.cex = 12, 
+"
+"1","    tl.col = ""black"", tl.srt = 45, digits = 2, as.is = FALSE) 
+"
+"1","{
+"
+"1","    type <- match.arg(type)
+"
+"1","    method <- match.arg(method)
+"
+"1","    insig <- match.arg(insig)
+"
+"1","    if (is.null(show.diag)) {
+"
+"1","        if (type == ""full"") {
+"
+"1","            show.diag <- TRUE
+"
+"1","        }
+"
+"1","        else {
+"
+"1","            show.diag <- FALSE
+"
+"1","        }
+"
+"1","    }
+"
+"1","    if (inherits(corr, ""cor_mat"")) {
+"
+"1","        cor.mat <- corr
+"
+"1","        corr <- .tibble_to_matrix(cor.mat)
+"
+"1","        p.mat <- .tibble_to_matrix(attr(cor.mat, ""pvalue""))
+"
+"1","    }
+"
+"1","    if (!is.matrix(corr) & !is.data.frame(corr)) {
+"
+"1","        stop(""Need a matrix or data frame!"")
+"
+"1","    }
+"
+"1","    corr <- as.matrix(corr)
+"
+"1","    corr <- base::round(x = corr, digits = digits)
+"
+"1","    if (hc.order) {
+"
+"1","        ord <- .hc_cormat_order(corr, hc.method = hc.method)
+"
+"1","        corr <- corr[ord, ord]
+"
+"1","        if (!is.null(p.mat)) {
+"
+"1","            p.mat <- p.mat[ord, ord]
+"
+"1","            p.mat <- base::round(x = p.mat, digits = digits)
+"
+"1","        }
+"
+"1","    }
+"
+"1","    if (!show.diag) {
+"
+"1","        corr <- .remove_diag(corr)
+"
+"1","        p.mat <- .remove_diag(p.mat)
+"
+"1","    }
+"
+"1","    if (type == ""lower"") {
+"
+"1","        corr <- .get_lower_tri(corr, show.diag)
+"
+"1","        p.mat <- .get_lower_tri(p.mat, show.diag)
+"
+"1","    }
+"
+"1","    else if (type == ""upper"") {
+"
+"1","        corr <- .get_upper_tri(corr, show.diag)
+"
+"1","        p.mat <- .get_upper_tri(p.mat, show.diag)
+"
+"1","    }
+"
+"1","    corr <- reshape2::melt(corr, na.rm = TRUE, as.is = as.is)
+"
+"1","    colnames(corr) <- c(""Var1"", ""Var2"", ""value"")
+"
+"1","    corr$pvalue <- rep(NA, nrow(corr))
+"
+"1","    corr$signif <- rep(NA, nrow(corr))
+"
+"1","    if (!is.null(p.mat)) {
+"
+"1","        p.mat <- reshape2::melt(p.mat, na.rm = TRUE)
+"
+"1","        corr$coef <- corr$value
+"
+"1","        corr$pvalue <- p.mat$value
+"
+"1","        corr$signif <- as.numeric(p.mat$value <= sig.level)
+"
+"1","        p.mat <- subset(p.mat, p.mat$value > sig.level)
+"
+"1","        if (insig == ""blank"") {
+"
+"1","            corr$value <- corr$value * corr$signif
+"
+"1","        }
+"
+"1","    }
+"
+"1","    corr$abs_corr <- abs(corr$value) * 10
+"
+"1","    p <- ggplot2::ggplot(data = corr, mapping = ggplot2::aes_string(x = ""Var1"", 
+"
+"1","        y = ""Var2"", fill = ""value""))
+"
+"1","    if (method == ""square"") {
+"
+"1","        p <- p + ggplot2::geom_tile(color = outline.color)
+"
+"1","    }
+"
+"1","    else if (method == ""circle"") {
+"
+"1","        p <- p + ggplot2::geom_point(color = outline.color, shape = 21, 
+"
+"1","            ggplot2::aes_string(size = ""abs_corr"")) + ggplot2::scale_size(range = c(4, 
+"
+"1","            10)) + ggplot2::guides(size = ""none"")
+"
+"1","    }
+"
+"1","    p <- p + ggplot2::scale_fill_gradient2(low = colors[1], high = colors[3], 
+"
+"1","        mid = colors[2], midpoint = 0, limit = c(-1, 1), space = ""Lab"", 
+"
+"1","        name = legend.title)
+"
+"1","    if (class(ggtheme)[[1]] == ""function"") {
+"
+"1","        p <- p + ggtheme()
+"
+"1","    }
+"
+"1","    else if (class(ggtheme)[[1]] == ""theme"") {
+"
+"1","        p <- p + ggtheme
+"
+"1","    }
+"
+"1","    p <- p + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = tl.srt, 
+"
+"1","        vjust = 1, size = tl.cex, hjust = 1), axis.text.y = ggplot2::element_text(size = tl.cex)) + 
+"
+"1","        ggplot2::coord_fixed()
+"
+"1","    label <- round(x = corr[, ""value""], digits = digits)
+"
+"1","    if (!is.null(p.mat) & insig == ""blank"") {
+"
+"1","        ns <- corr$pvalue > sig.level
+"
+"1","        if (sum(ns) > 0) 
+"
+"1","            label[ns] <- "" ""
+"
+"1","    }
+"
+"1","    if (lab) {
+"
+"1","        p <- p + ggplot2::geom_text(mapping = ggplot2::aes_string(x = ""Var1"", 
+"
+"1","            y = ""Var2""), label = label, color = lab_col, size = lab_size)
+"
+"1","    }
+"
+"1","    if (!is.null(p.mat) & insig == ""pch"") {
+"
+"1","        p <- p + ggplot2::geom_point(data = p.mat, mapping = ggplot2::aes_string(x = ""Var1"", 
+"
+"1","            y = ""Var2""), shape = pch, size = pch.cex, color = pch.col)
+"
+"1","    }
+"
+"1","    if (title != """") {
+"
+"1","        p <- p + ggplot2::ggtitle(title)
+"
+"1","    }
+"
+"1","    if (!show.legend) {
+"
+"1","        p <- p + ggplot2::theme(legend.position = ""none"")
+"
+"1","    }
+"
+"1","    p <- p + .no_panel()
+"
+"1","    p
+"
+"1","}
+"
+"1","<bytecode: 0x0000019c16b5d568>
+"
+"1","<environment: namespace:ggcorrplot>
+"

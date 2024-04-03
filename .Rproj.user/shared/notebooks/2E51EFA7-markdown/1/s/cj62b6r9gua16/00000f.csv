@@ -1,0 +1,8 @@
+"0","# 9. Find a good logistic regression model"
+"0",""
+"0","# Exploring relationships"
+"0","diabetes_correlations <- diabetes_data |>"
+"0","  cor(use = ""complete.obs"")"
+"0",""
+"0","rounded_correlations <- round(diabetes_correlations, 2) "
+"0","kable(rounded_correlations, format = ""markdown"", digits = 2)"

@@ -1,0 +1,7 @@
+"0",""
+"0","diabetes_data |>"
+"0","  ggplot(aes(x = Outcome, y = Glucose)) +"
+"0","  geom_boxplot() +"
+"0","  labs("
+"0","    x = ""Diabetes"","
+"0","    y = ""Glucose level"")"

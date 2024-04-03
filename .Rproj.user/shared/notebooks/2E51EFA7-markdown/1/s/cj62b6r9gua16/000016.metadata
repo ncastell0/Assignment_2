@@ -1,0 +1,1 @@
+{"height":409.76514215080348,"width":663.0,"size_behavior":0,"conditions":[[1,"Warning: \u001B[38;5;251mContinuous \u001B[32mx\u001B[38;5;251m aesthetic\n\u001B[36mℹ\u001B[38;5;251m did you forget `aes(group = ...)`?\u001B[39m"],[1,"Warning: \u001B[38;5;251mRemoved 148 rows containing non-finite values (`stat_boxplot()`).\u001B[39m"]]}

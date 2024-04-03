@@ -1,0 +1,3 @@
+"0",""
+"0","# Answer to question 2: Since the correlation was very weak, we should expect the data to be widely scattered around the regression line. In this sense, the plotted points match the correlations we computed. However, it is also hard to visualize a linear negative relationship between sepal width and length. This indicates that, besides being weak, the effect is also unstable and unreliable, and doesn't apply to individual observations. Despite the overall negative correlation, the relationship between sepal width and length changes a lot for the different data points."
+"0",""

@@ -1,0 +1,3 @@
+"0","# 8. Load the Pima Indian diabetes .csv into R "
+"0",""
+"0","diabetes_data <- read.csv(""a2_diabetes.csv"")"
