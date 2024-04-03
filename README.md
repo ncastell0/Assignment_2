@@ -1,6 +1,6 @@
 # Assignment_2
  
-Submitted as a partial assessment in the course Data Analytics with R, part 1, at the University of Umeå.
+Submitted as a partial assignment in the course Data Analytics with R, part 1, at the University of Umeå.
 
 ## Related modules
 
